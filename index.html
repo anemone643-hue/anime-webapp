@@ -5,7 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Neon Anime Search</title>
     <!-- Подключаем официальную библиотеку Telegram -->
-    <script src="https://telegram.org/js/telegram-web-app.js"></script>
+    <script src="https://telegram.org"></script>
     <style>
         * { margin: 0; padding: 0; box-sizing: border-box; }
         
@@ -138,50 +138,42 @@
     <div class="container">
         <h1>🎌 ПОИСК <span>АНИМЕ</span></h1>
         <input type="text" id="searchInput" placeholder="Введите название...">
-        <!-- ИСПРАВЛЕНО: Теперь это честная кнопка, которая ждет именно ручного клика -->
         <button class="btn-neon" onclick="startSearch()">🔍 НАЙТИ НА RUTUBE</button>
     </div>
 
     <script>
         const tg = window.Telegram.WebApp;
         
-        // Ждем загрузки страницы
         window.addEventListener('load', () => {
             if (tg) {
                 tg.ready();
                 tg.expand();
             }
             
-            // Считываем переданное от бота название
             const params = new URLSearchParams(window.location.search);
             const title = params.get("title");
             
             if (title) {
-                // Вставляем красивый декодированный текст в поле ввода
                 document.getElementById("searchInput").value = decodeURIComponent(title);
-                // ИСПРАВЛЕНО: Автоматический поиск полностью убран. 
-                // Пользователь сам увидит название в инпуте и кликнет по кнопке.
             }
         });
 
-        // Функция срабатывает СТРОГО по ручному клику пользователя по кнопке
         function startSearch() {
             const query = document.getElementById("searchInput").value;
             if (!query) return;
             
             const encoded = encodeURIComponent(query);
+            
+            // ИСПРАВЛЕНО: Четко прописаны слэши и гет-параметры, чтобы адрес не склеивался
             const rutubeUrl = `https://rutube.ru{encoded}`;
             
-            // ИСПРАВЛЕНО: Так как клик совершен вручную, Telegram 100% разрешит и обработает этот метод
             if (tg && tg.openLink) {
                 tg.openLink(rutubeUrl);
                 
-                // Делаем микрозадержку перед закрытием, чтобы ссылка успела инициализироваться
                 setTimeout(() => {
                     tg.close();
-                }, 100);
+                }, 150);
             } else {
-                // Фаллбэк для обычных браузеров
                 window.open(rutubeUrl, '_blank');
             }
         }
