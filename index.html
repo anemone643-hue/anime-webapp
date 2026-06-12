@@ -103,7 +103,7 @@
             box-shadow: 0 0 12px rgba(0, 242, 254, 0.4);
         }
 
-        /* Киберпанк-кнопка перехода */
+        /* ИСПРАВЛЕНО: Ссылка оформлена как полноценная неоновая киберпанк-кнопка */
         .btn-neon {
             display: block;
             width: 100%;
@@ -115,7 +115,7 @@
             font-weight: 800;
             text-transform: uppercase;
             letter-spacing: 1px;
-            border: none;
+            text-decoration: none;
             cursor: pointer;
             transition: all 0.3s ease;
             box-shadow: 0 0 15px rgba(0, 242, 254, 0.4);
@@ -138,7 +138,8 @@
     <div class="container">
         <h1>🎌 ПОИСК <span>АНИМЕ</span></h1>
         <input type="text" id="searchInput" placeholder="Введите название...">
-        <button class="btn-neon" onclick="startSearch()">🔍 НАЙТИ НА RUTUBE</button>
+        <!-- ИСПРАВЛЕНО: Теперь кнопка — это чистая ссылка, которая не блокируется Telegram -->
+        <a href="#" id="rutubeBtn" class="btn-neon" onclick="handleLinkClick(event)">🔍 НАЙТИ НА RUTUBE</a>
     </div>
 
     <script>
@@ -154,27 +155,45 @@
             const title = params.get("title");
             
             if (title) {
-                document.getElementById("searchInput").value = decodeURIComponent(title);
+                const decodedTitle = decodeURIComponent(title);
+                document.getElementById("searchInput").value = decodedTitle;
+                // Сразу же привязываем правильный URL к нашей кнопке-ссылке
+                updateRutubeHref(decodedTitle);
             }
         });
 
-        function startSearch() {
-            const query = document.getElementById("searchInput").value;
+        // Если пользователь решит отредактировать название руками, ссылка мгновенно обновится
+        document.getElementById("searchInput").addEventListener("input", (e) => {
+            updateRutubeHref(e.target.value);
+        });
+
+        // Функция формирования и записи ссылки в тег <a>
+        function updateRutubeHref(query) {
             if (!query) return;
-            
             const encoded = encodeURIComponent(query);
-            
-            // ИСПРАВЛЕНО: Четко прописаны слэши и гет-параметры, чтобы адрес не склеивался
-            const rutubeUrl = `https://rutube.ru{encoded}`;
-            
+            document.getElementById("rutubeBtn").href = `https://rutube.ru{encoded}`;
+        }
+
+        // Обработка самого нажатия
+        function handleLinkClick(event) {
+            const query = document.getElementById("searchInput").value;
+            if (!query) {
+                event.preventDefault();
+                return;
+            }
+
+            // ИСПРАВЛЕНО: Для Telegram WebApp принудительно открываем через openLink, для обычного браузера — по href
             if (tg && tg.openLink) {
-                tg.openLink(rutubeUrl);
+                event.preventDefault(); // Запрещаем стандартный переход, отдавая приоритет API Telegram
+                const encoded = encodeURIComponent(query);
+                const finalUrl = `https://rutube.ru{encoded}`;
                 
+                tg.openLink(finalUrl);
+                
+                // Закрываем окно WebApp сразу после успешного клика
                 setTimeout(() => {
                     tg.close();
-                }, 150);
-            } else {
-                window.open(rutubeUrl, '_blank');
+                }, 100);
             }
         }
     </script>
