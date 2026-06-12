@@ -8,95 +8,48 @@
     <script src="https://telegram.org"></script>
     <style>
         * { margin: 0; padding: 0; box-sizing: border-box; }
-        
         body {
             font-family: 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
-            background: #0a0a12;
-            color: #fff;
-            min-height: 100vh;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            justify-content: center;
-            padding: 20px;
-            overflow-y: auto;
-            position: relative;
+            background: #0a0a12; color: #fff; min-height: 100vh;
+            display: flex; flex-direction: column; align-items: center; justify-content: center;
+            padding: 20px; overflow-y: auto; position: relative;
         }
-
-        /* Неоновый фон */
         body::before {
             content: ''; position: absolute; width: 250px; height: 250px;
-            background: rgba(0, 242, 254, 0.12); border-radius: 50%;
-            filter: blur(80px); top: 15%; left: 10%; z-index: 0;
+            background: rgba(0, 242, 254, 0.12); border-radius: 50%; filter: blur(80px); top: 15%; left: 10%; z-index: 0;
         }
         body::after {
             content: ''; position: absolute; width: 250px; height: 250px;
-            background: rgba(255, 0, 127, 0.12); border-radius: 50%;
-            filter: blur(80px); bottom: 15%; right: 10%; z-index: 0;
+            background: rgba(255, 0, 127, 0.12); border-radius: 50%; filter: blur(80px); bottom: 15%; right: 10%; z-index: 0;
         }
-
         .container {
-            width: 100%; max-width: 380px;
-            background: rgba(21, 21, 33, 0.85); backdrop-filter: blur(10px);
-            padding: 30px 20px; border-radius: 20px; text-align: center; z-index: 1;
-            border: 1px solid rgba(0, 242, 254, 0.25);
+            width: 100%; max-width: 380px; background: rgba(21, 21, 33, 0.85); backdrop-filter: blur(10px);
+            padding: 30px 20px; border-radius: 20px; text-align: center; z-index: 1; border: 1px solid rgba(0, 242, 254, 0.25);
             box-shadow: 0 0 25px rgba(0, 242, 254, 0.1);
         }
-
-        h1 { 
-            margin-bottom: 20px; font-size: 22px; font-weight: 800;
-            letter-spacing: 1.5px; text-transform: uppercase;
-            text-shadow: 0 0 10px rgba(0, 242, 254, 0.5);
-        }
+        h1 { margin-bottom: 20px; font-size: 22px; font-weight: 800; letter-spacing: 1.5px; text-transform: uppercase; text-shadow: 0 0 10px rgba(0, 242, 254, 0.5); }
         h1 span { color: #ff007f; text-shadow: 0 0 10px rgba(255, 0, 127, 0.5); }
-
-        /* Поле ввода */
-        input {
-            width: 100%; padding: 14px; border-radius: 12px; border: 2px solid #252538;
-            font-size: 16px; background: #11111e; color: #fff; margin-bottom: 15px;
-            text-align: center; outline: none;
-        }
+        input { width: 100%; padding: 14px; border-radius: 12px; border: 2px solid #252538; font-size: 16px; background: #11111e; color: #fff; margin-bottom: 15px; text-align: center; outline: none; }
         input:focus { border-color: #00f2fe; box-shadow: 0 0 12px rgba(0, 242, 254, 0.4); }
-
-        /* Главная кнопка Искать */
         .btn-main {
-            width: 100%; padding: 14px; border-radius: 12px; border: none;
-            background: linear-gradient(45deg, #ff007f, #ff758c);
-            color: white; font-size: 16px; font-weight: bold; cursor: pointer;
-            text-transform: uppercase; letter-spacing: 1px; margin-bottom: 25px;
-            box-shadow: 0 0 15px rgba(255, 0, 127, 0.4);
-            transition: all 0.2s ease;
+            width: 100%; padding: 14px; border-radius: 12px; border: none; background: linear-gradient(45deg, #ff007f, #ff758c);
+            color: white; font-size: 16px; font-weight: bold; cursor: pointer; text-transform: uppercase; letter-spacing: 1px; margin-bottom: 25px;
+            box-shadow: 0 0 15px rgba(255, 0, 127, 0.4); transition: all 0.2s ease;
         }
         .btn-main:active { transform: scale(0.98); }
-
-        /* Блок с результатами (ссылками) */
-        .results-box {
-            display: none; flex-direction: column; gap: 12px; margin-bottom: 25px;
-            border-top: 1px solid rgba(255, 255, 255, 0.1); padding-top: 20px;
-        }
+        .results-box { display: none; flex-direction: column; gap: 12px; margin-bottom: 25px; border-top: 1px solid rgba(255, 255, 255, 0.1); padding-top: 20px; }
         .results-title { font-size: 13px; color: #8a8a9e; text-transform: uppercase; margin-bottom: 5px; text-align: left;}
-
-        .btn-platform {
-            display: block; width: 100%; padding: 12px; border-radius: 10px; color: #fff;
-            font-size: 14px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.5px;
-            text-decoration: none; text-align: center; border: 1px solid transparent; transition: all 0.2s ease;
-        }
-
-        .btn-rutube { background: rgba(0, 202, 211, 0.1); border-color: #00cad3; }
-        .btn-rutube:hover { background: #00cad3; color: #000; }
-        .btn-vk { background: rgba(0, 119, 255, 0.1); border-color: #0077ff; }
-        .btn-vk:hover { background: #0077ff; }
-        .btn-yandex { background: rgba(255, 204, 0, 0.1); border-color: #ffcc00; color: #ffcc00; }
-        .btn-yandex:hover { background: #ffcc00; color: #000; }
-
-        /* История */
+        .btn-platform { display: block; width: 100%; padding: 14px; border-radius: 12px; color: #fff; font-size: 14px; font-weight: 700; text-transform: uppercase; letter-spacing: 1px; text-decoration: none; text-align: center; border: 1px solid transparent; transition: all 0.2s ease; }
+        .btn-rutube { background: rgba(0, 202, 211, 0.15); border-color: #00cad3; box-shadow: 0 0 10px rgba(0, 202, 211, 0.2); }
+        .btn-rutube:hover { background: #00cad3; color: #05050a; box-shadow: 0 0 20px rgba(0, 202, 211, 0.6); }
+        .btn-vk { background: rgba(0, 119, 255, 0.15); border-color: #0077ff; box-shadow: 0 0 10px rgba(0, 119, 255, 0.2); }
+        .btn-vk:hover { background: #0077ff; color: #fff; box-shadow: 0 0 20px rgba(0, 119, 255, 0.6); }
+        .btn-yandex { background: rgba(255, 204, 0, 0.15); border-color: #ffcc00; color: #ffcc00; box-shadow: 0 0 10px rgba(255, 204, 0, 0.2); }
+        .btn-yandex:hover { background: #ffcc00; color: #05050a; box-shadow: 0 0 20px rgba(255, 204, 0, 0.6); }
         .history-box { border-top: 1px dashed rgba(255, 255, 255, 0.1); padding-top: 20px; text-align: left; }
         .history-title { font-size: 11px; font-weight: bold; color: #5a5a6e; text-transform: uppercase; margin-bottom: 10px; }
         .history-tags { display: flex; flex-wrap: wrap; gap: 6px; }
-        .history-tag {
-            background: rgba(0, 242, 254, 0.05); border: 1px solid rgba(0, 242, 254, 0.3); color: #00f2fe;
-            padding: 5px 10px; border-radius: 6px; font-size: 12px; cursor: pointer; white-space: nowrap;
-        }
+        .history-tag { background: rgba(0, 242, 254, 0.05); border: 1px solid rgba(0, 242, 254, 0.3); color: #00f2fe; padding: 5px 10px; border-radius: 6px; font-size: 12px; cursor: pointer; white-space: nowrap; }
     </style>
 </head>
 <body>
@@ -108,12 +61,11 @@
         <input type="text" id="searchInput" placeholder="Название аниме...">
         <button class="btn-main" onclick="startSearch()">🔍 Искать ссылки</button>
         
-        <!-- СЮДА ВЫДАЮТСЯ ССЫЛКИ ДЛЯ ПЕРЕХОДА -->
         <div class="results-box" id="resultsBox">
             <div class="results-title">🍿 Ссылки для просмотра:</div>
-            <a href="#" id="rutubeLink" target="_blank" class="btn-platform btn-rutube" onclick="openExternal(event, 'rutube')">Смотреть на Rutube</a>
-            <a href="#" id="vkLink" target="_blank" class="btn-platform btn-vk" onclick="openExternal(event, 'vk')">Смотреть в VK Видео</a>
-            <a href="#" id="yandexLink" target="_blank" class="btn-platform btn-yandex" onclick="openExternal(event, 'yandex')">Открыть в Яндекс Видео</a>
+            <a href="https://rutube.ru" id="rutubeLink" target="_blank" class="btn-platform btn-rutube" onclick="openExternal(event, 'rutube')">Смотреть на Rutube</a>
+            <a href="https://vk.com" id="vkLink" target="_blank" class="btn-platform btn-vk" onclick="openExternal(event, 'vk')">Смотреть в VK Видео</a>
+            <a href="https://yandex.ru" id="yandexLink" target="_blank" class="btn-platform btn-yandex" onclick="openExternal(event, 'yandex')">Открыть в Яндекс Видео</a>
         </div>
 
         <div class="history-box">
@@ -129,55 +81,53 @@
             if (tg) { tg.ready(); tg.expand(); }
             renderHistory();
 
-            // Если бот сам передал название в ссылку
             const params = new URLSearchParams(window.location.search);
             const title = params.get("title");
             if (title) {
                 const decoded = decodeURIComponent(title);
                 document.getElementById("searchInput").value = decoded;
-                // Сразу генерируем ссылки и показываем блок
+                saveToHistory(decoded);
                 generateLinks(decoded);
             }
         });
 
-        // Функция запуска поиска по кнопке
         function startSearch() {
-            const query = document.getElementById("searchInput").value.strip ? document.getElementById("searchInput").value.strip() : document.getElementById("searchInput").value;
+            const query = document.getElementById("searchInput").value.trim();
             if (!query) return;
             saveToHistory(query);
             generateLinks(query);
         }
 
-        // Функция генерации ссылок и показа блока на экране
+        // ИСПРАВЛЕНО: Шаблонные строки намертво фиксируют структуру URL, предотвращая склеивание доменов
         function generateLinks(query) {
+            if (!query) return;
             const encoded = encodeURIComponent(query);
             
-            // Прописываем чистые ссылки в кнопки
             document.getElementById("rutubeLink").href = `https://rutube.ru{encoded}`;
-            document.getElementById("vkLink").href = `https://vk.com{encoded}`;
-            document.getElementById("yandexLink").href = `https://yandex.ru{encoded}`;
+            document.getElementById("vkLink").href = `https://vk.com?q=${encoded}`;
+            document.getElementById("yandexLink").href = `https://yandex.ru/search?text=${encoded}`;
             
-            // Показываем блок со ссылками на экране
             document.getElementById("resultsBox").style.display = "flex";
         }
 
-        // Безопасное открытие ссылок для Telegram и ПК
         function openExternal(event, platform) {
-            const query = document.getElementById("searchInput").value;
-            if (!query) return;
+            const query = document.getElementById("searchInput").value.trim();
+            if (!query) { event.preventDefault(); return; }
+            
             const encoded = encodeURIComponent(query);
 
             if (tg && tg.openLink) {
-                event.preventDefault(); // Защита от дублирования вкладок
+                event.preventDefault(); // Защита от открытия пустых окон Safari/Chrome
+                
+                // ИСПРАВЛЕНО: Безопасное формирование путей для Telegram API
                 let targetUrl = `https://rutube.ru{encoded}`;
-                if (platform === 'vk') targetUrl = `https://vk.com{encoded}`;
-                if (platform === 'yandex') targetUrl = `https://yandex.ru{encoded}`;
+                if (platform === 'vk') targetUrl = `https://vk.com?q=${encoded}`;
+                if (platform === 'yandex') targetUrl = `https://yandex.ru/search?text=${encoded}`;
                 
                 tg.openLink(targetUrl);
             }
         }
 
-        // Логика истории без опечаток
         function saveToHistory(title) {
             if (!title || title === "Неизвестный фильм") return;
             let history = JSON.parse(localStorage.getItem('anime_history')) || [];
@@ -190,7 +140,7 @@
 
         function renderHistory() {
             const history = JSON.parse(localStorage.getItem('anime_history')) || [];
-            const container = document.getElementById('historyTags'); // ИСПРАВЛЕНО: строго маленькая буква d
+            const container = document.getElementById('historyTags');
             container.innerHTML = "";
             if (history.length === 0) {
                 container.innerHTML = "<span style='font-size:11px; color:#444;'>История пуста</span>";
