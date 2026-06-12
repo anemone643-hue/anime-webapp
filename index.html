@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Neon Anime Search</title>
+    <title>Neon Media Search</title>
     <!-- Подключаем официальную библиотеку Telegram -->
     <script src="https://telegram.org"></script>
     <style>
@@ -19,7 +19,7 @@
             align-items: center;
             justify-content: center;
             padding: 20px;
-            overflow: hidden;
+            overflow-y: auto;
             position: relative;
         }
 
@@ -29,11 +29,11 @@
             position: absolute;
             width: 250px;
             height: 250px;
-            background: rgba(0, 242, 254, 0.15);
+            background: rgba(0, 242, 254, 0.12);
             border-radius: 50%;
             filter: blur(80px);
-            top: 20%;
-            left: 15%;
+            top: 15%;
+            left: 10%;
             z-index: 0;
         }
         body::after {
@@ -41,21 +41,21 @@
             position: absolute;
             width: 250px;
             height: 250px;
-            background: rgba(255, 0, 127, 0.15);
+            background: rgba(255, 0, 127, 0.12);
             border-radius: 50%;
             filter: blur(80px);
-            bottom: 20%;
-            right: 15%;
+            bottom: 15%;
+            right: 10%;
             z-index: 0;
         }
 
-        /* Неоновый контейнер */
+        /* Главный неоновый контейнер */
         .container {
             width: 100%;
-            max-width: 380px;
+            max-width: 400px;
             background: rgba(21, 21, 33, 0.85);
             backdrop-filter: blur(10px);
-            padding: 35px 25px;
+            padding: 30px 20px;
             border-radius: 20px;
             text-align: center;
             z-index: 1;
@@ -70,17 +70,25 @@
         }
 
         h1 { 
-            margin-bottom: 25px; 
+            margin-bottom: 5px; 
             font-size: 22px; 
             font-weight: 800;
             letter-spacing: 1.5px;
             text-transform: uppercase;
-            text-shadow: 0 0 10px rgba(0, 242, 254, 0.6);
+            text-shadow: 0 0 10px rgba(0, 242, 254, 0.5);
         }
         
         h1 span {
             color: #ff007f;
-            text-shadow: 0 0 10px rgba(255, 0, 127, 0.6);
+            text-shadow: 0 0 10px rgba(255, 0, 127, 0.5);
+        }
+
+        .subtitle {
+            font-size: 13px;
+            color: #8a8a9e;
+            margin-bottom: 20px;
+            text-transform: uppercase;
+            letter-spacing: 1px;
         }
 
         /* Поле ввода */
@@ -103,43 +111,118 @@
             box-shadow: 0 0 12px rgba(0, 242, 254, 0.4);
         }
 
-        /* ИСПРАВЛЕНО: Ссылка оформлена как полноценная неоновая киберпанк-кнопка */
-        .btn-neon {
+        /* Сетка для мульти-кнопок */
+        .buttons-grid {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+            margin-bottom: 25px;
+        }
+
+        .btn-platform {
             display: block;
             width: 100%;
-            padding: 16px;
+            padding: 14px;
             border-radius: 12px;
-            background: linear-gradient(45deg, #00f2fe, #4facfe);
-            color: #05050a;
-            font-size: 15px;
-            font-weight: 800;
+            color: #fff;
+            font-size: 14px;
+            font-weight: 700;
             text-transform: uppercase;
             letter-spacing: 1px;
             text-decoration: none;
             cursor: pointer;
-            transition: all 0.3s ease;
-            box-shadow: 0 0 15px rgba(0, 242, 254, 0.4);
+            text-align: center;
+            transition: all 0.2s ease;
+            border: 1px solid transparent;
         }
 
-        .btn-neon:hover {
-            background: linear-gradient(45deg, #ff007f, #ff758c);
+        .btn-platform:active { transform: scale(0.98); }
+
+        .btn-rutube { background: rgba(0, 202, 211, 0.15); border-color: #00cad3; box-shadow: 0 0 10px rgba(0, 202, 211, 0.2); }
+        .btn-rutube:hover { background: #00cad3; color: #05050a; box-shadow: 0 0 20px rgba(0, 202, 211, 0.6); }
+
+        .btn-vk { background: rgba(0, 119, 255, 0.15); border-color: #0077ff; box-shadow: 0 0 10px rgba(0, 119, 255, 0.2); }
+        .btn-vk:hover { background: #0077ff; color: #fff; box-shadow: 0 0 20px rgba(0, 119, 255, 0.6); }
+
+        .btn-youtube { background: rgba(255, 0, 0, 0.15); border-color: #ff0000; box-shadow: 0 0 10px rgba(255, 0, 0, 0.2); }
+        .btn-youtube:hover { background: #ff0000; color: #fff; box-shadow: 0 0 20px rgba(255, 0, 0, 0.6); }
+
+        .btn-yandex { background: rgba(255, 204, 0, 0.15); border-color: #ffcc00; color: #ffcc00; box-shadow: 0 0 10px rgba(255, 204, 0, 0.2); }
+        .btn-yandex:hover { background: #ffcc00; color: #05050a; box-shadow: 0 0 20px rgba(255, 204, 0, 0.6); }
+
+        .btn-google { background: rgba(255, 0, 127, 0.15); border-color: #ff007f; box-shadow: 0 0 10px rgba(255, 0, 127, 0.2); }
+        .btn-google:hover { background: #ff007f; color: #fff; box-shadow: 0 0 20px rgba(255, 0, 127, 0.6); }
+
+        /* ИСПРАВЛЕНО: Новый блок Неоновой истории поиска в самом низу панели */
+        .history-box {
+            border-top: 1px dashed rgba(255, 255, 255, 0.15);
+            padding-top: 20px;
+            text-align: left;
+        }
+
+        .history-title {
+            font-size: 12px;
+            font-weight: bold;
+            color: #8a8a9e;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            margin-bottom: 12px;
+            text-shadow: 0 0 5px rgba(0, 242, 254, 0.2);
+        }
+
+        .history-tags {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+            max-height: 120px;
+            overflow-y: auto;
+        }
+
+        .history-tag {
+            background: rgba(255, 0, 127, 0.08);
+            border: 1px solid rgba(255, 0, 127, 0.4);
+            color: #ff758c;
+            padding: 6px 12px;
+            border-radius: 8px;
+            font-size: 13px;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            white-space: nowrap;
+            text-shadow: 0 0 5px rgba(255, 0, 127, 0.3);
+        }
+
+        .history-tag:hover {
+            background: #ff007f;
             color: #fff;
-            box-shadow: 0 0 25px rgba(255, 0, 127, 0.7);
-            transform: translateY(-2px);
-        }
-
-        .btn-neon:active {
-            transform: translateY(1px);
+            border-color: #ff007f;
+            box-shadow: 0 0 15px rgba(255, 0, 127, 0.5);
+            transform: translateY(-1px);
         }
     </style>
 </head>
 <body>
 
     <div class="container">
-        <h1>🎌 ПОИСК <span>АНИМЕ</span></h1>
+        <h1> Мульти <span>Поиск</span></h1>
+        <div class="subtitle">Где хотите посмотреть тайтл?</div>
+        
         <input type="text" id="searchInput" placeholder="Введите название...">
-        <!-- ИСПРАВЛЕНО: Теперь кнопка — это чистая ссылка, которая не блокируется Telegram -->
-        <a href="#" id="rutubeBtn" class="btn-neon" onclick="handleLinkClick(event)">🔍 НАЙТИ НА RUTUBE</a>
+        
+        <div class="buttons-grid">
+            <a href="#" id="rutubeBtn" target="_blank" class="btn-platform btn-rutube" onclick="trackClick(event, 'rutube')">💚 Искать на Rutube</a>
+            <a href="#" id="vkBtn" target="_blank" class="btn-platform btn-vk" onclick="trackClick(event, 'vk')">💙 Искать в VK Видео</a>
+            <a href="#" id="youtubeBtn" target="_blank" class="btn-platform btn-youtube" onclick="trackClick(event, 'youtube')">❤️ Искать на YouTube</a>
+            <a href="#" id="yandexBtn" target="_blank" class="btn-platform btn-yandex" onclick="trackClick(event, 'yandex')">🟡 Поиск в Яндекс Видео</a>
+            <a href="#" id="googleBtn" target="_blank" class="btn-platform btn-google" onclick="trackClick(event, 'google')">💖 Найти через Google</a>
+        </div>
+
+        <!-- ИСПРАВЛЕНО: Сюда динамически скриптом будут выводиться все ранее искаемые аниме -->
+        <div class="history-box">
+            <div class="history-title">🔍 Что у нас нашли для просмотра:</div>
+            <div class="history-tags" id="historyTags">
+                <!-- Сюда вставляются теги -->
+            </div>
+        </div>
     </div>
 
     <script>
@@ -151,51 +234,40 @@
                 tg.expand();
             }
             
+            // Отображаем сохраненную историю при запуске
+            renderHistory();
+
             const params = new URLSearchParams(window.location.search);
             const title = params.get("title");
             
             if (title) {
                 const decodedTitle = decodeURIComponent(title);
                 document.getElementById("searchInput").value = decodedTitle;
-                // Сразу же привязываем правильный URL к нашей кнопке-ссылке
-                updateRutubeHref(decodedTitle);
+                
+                // Сохраняем это аниме в историю просмотров
+                saveToHistory(decodedTitle);
+                updateAllHrefs(decodedTitle);
             }
         });
 
-        // Если пользователь решит отредактировать название руками, ссылка мгновенно обновится
         document.getElementById("searchInput").addEventListener("input", (e) => {
-            updateRutubeHref(e.target.value);
+            updateAllHrefs(e.target.value);
         });
 
-        // Функция формирования и записи ссылки в тег <a>
-        function updateRutubeHref(query) {
+        function updateAllHrefs(query) {
             if (!query) return;
             const encoded = encodeURIComponent(query);
+            
             document.getElementById("rutubeBtn").href = `https://rutube.ru{encoded}`;
+            document.getElementById("vkBtn").href = `https://vk.com{encoded}`;
+            document.getElementById("youtubeBtn").href = `https://youtube.com{encoded}`;
+            document.getElementById("yandexBtn").href = `https://yandex.ru{encoded}`;
+            document.getElementById("googleBtn").href = `https://google.com{encoded}+смотреть+онлайн`;
         }
 
-        // Обработка самого нажатия
-        function handleLinkClick(event) {
-            const query = document.getElementById("searchInput").value;
-            if (!query) {
-                event.preventDefault();
-                return;
-            }
-
-            // ИСПРАВЛЕНО: Для Telegram WebApp принудительно открываем через openLink, для обычного браузера — по href
-            if (tg && tg.openLink) {
-                event.preventDefault(); // Запрещаем стандартный переход, отдавая приоритет API Telegram
-                const encoded = encodeURIComponent(query);
-                const finalUrl = `https://rutube.ru{encoded}`;
-                
-                tg.openLink(finalUrl);
-                
-                // Закрываем окно WebApp сразу после успешного клика
-                setTimeout(() => {
-                    tg.close();
-                }, 100);
-            }
-        }
-    </script>
-</body>
-</html>
+        // ИСПРАВЛЕНО: Логика сохранения аниме в память браузера
+        function saveToHistory(title) {
+            if (!title || title.trim() === "" || title === "Неизвестный фильм") return;
+            
+            let history = JSON.parse(localStorage.getItem('anime_search_history')) || [];
+            
