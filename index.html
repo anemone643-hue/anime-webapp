@@ -5,7 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Neon Anime Search</title>
     <!-- Подключаем официальную библиотеку Telegram -->
-    <script src="https://telegram.org"></script>
+    <script src="https://telegram.org/js/telegram-web-app.js"></script>
     <style>
         * { margin: 0; padding: 0; box-sizing: border-box; }
         
@@ -23,12 +23,12 @@
             position: relative;
         }
 
-        /* Фоновое атмосферное свечение */
+        /* Фоновое неоновое свечение */
         body::before {
             content: '';
             position: absolute;
-            width: 300px;
-            height: 300px;
+            width: 250px;
+            height: 250px;
             background: rgba(0, 242, 254, 0.15);
             border-radius: 50%;
             filter: blur(80px);
@@ -39,8 +39,8 @@
         body::after {
             content: '';
             position: absolute;
-            width: 300px;
-            height: 300px;
+            width: 250px;
+            height: 250px;
             background: rgba(255, 0, 127, 0.15);
             border-radius: 50%;
             filter: blur(80px);
@@ -60,36 +60,30 @@
             text-align: center;
             z-index: 1;
             border: 1px solid rgba(0, 242, 254, 0.25);
-            box-shadow: 0 0 25px rgba(0, 242, 254, 0.1), 
-                        inset 0 0 15px rgba(0, 242, 254, 0.05);
+            box-shadow: 0 0 25px rgba(0, 242, 254, 0.1);
             animation: panelPulse 4s infinite alternate;
         }
 
-        /* Анимация легкого дыхания рамки */
         @keyframes panelPulse {
             0% { border-color: rgba(0, 242, 254, 0.25); box-shadow: 0 0 25px rgba(0, 242, 254, 0.1); }
             100% { border-color: rgba(255, 0, 127, 0.3); box-shadow: 0 0 30px rgba(255, 0, 127, 0.15); }
         }
 
-        /* Заголовок с неоновым текстом */
         h1 { 
             margin-bottom: 25px; 
-            font-size: 24px; 
+            font-size: 22px; 
             font-weight: 800;
             letter-spacing: 1.5px;
             text-transform: uppercase;
-            color: #fff;
-            text-shadow: 0 0 10px rgba(0, 242, 254, 0.6),
-                         0 0 20px rgba(0, 242, 254, 0.3);
+            text-shadow: 0 0 10px rgba(0, 242, 254, 0.6);
         }
         
         h1 span {
             color: #ff007f;
-            text-shadow: 0 0 10px rgba(255, 0, 127, 0.6),
-                         0 0 20px rgba(255, 0, 127, 0.3);
+            text-shadow: 0 0 10px rgba(255, 0, 127, 0.6);
         }
 
-        /* Неоновое поле ввода */
+        /* Поле ввода */
         input {
             width: 100%;
             padding: 14px;
@@ -102,46 +96,40 @@
             text-align: center;
             outline: none;
             transition: all 0.3s ease;
-            box-shadow: inset 0 2px 4px rgba(0,0,0,0.5);
         }
 
         input:focus {
             border-color: #00f2fe;
-            box-shadow: 0 0 12px rgba(0, 242, 254, 0.4),
-                        inset 0 0 8px rgba(0, 242, 254, 0.1);
-            background: #151528;
+            box-shadow: 0 0 12px rgba(0, 242, 254, 0.4);
         }
 
-        /* Киберпунк-ссылка в виде светящейся кнопки */
-        .btn-link {
+        /* Киберпанк-кнопка перехода */
+        .btn-neon {
             display: block;
             width: 100%;
             padding: 16px;
             border-radius: 12px;
             background: linear-gradient(45deg, #00f2fe, #4facfe);
             color: #05050a;
-            font-size: 16px;
+            font-size: 15px;
             font-weight: 800;
             text-transform: uppercase;
             letter-spacing: 1px;
-            text-decoration: none;
+            border: none;
             cursor: pointer;
-            text-align: center;
             transition: all 0.3s ease;
             box-shadow: 0 0 15px rgba(0, 242, 254, 0.4);
-            border: none;
         }
 
-        .btn-link:hover {
+        .btn-neon:hover {
             background: linear-gradient(45deg, #ff007f, #ff758c);
             color: #fff;
             box-shadow: 0 0 25px rgba(255, 0, 127, 0.7);
             transform: translateY(-2px);
         }
 
-        .btn-link:active {
+        .btn-neon:active {
             transform: translateY(1px);
-            box-shadow: 0 0 10px rgba(255, 0, 127, 0.4);
         }
     </style>
 </head>
@@ -149,54 +137,52 @@
 
     <div class="container">
         <h1>🎌 ПОИСК <span>АНИМЕ</span></h1>
-        <input type="text" id="searchInput" placeholder="Ожидание тайтла...">
-        <a href="#" id="rutubeBtn" class="btn-link" onclick="search(event)">🔍 НАЙТИ НА RUTUBE</a>
+        <input type="text" id="searchInput" placeholder="Введите название...">
+        <!-- ИСПРАВЛЕНО: Теперь это честная кнопка, которая ждет именно ручного клика -->
+        <button class="btn-neon" onclick="startSearch()">🔍 НАЙТИ НА RUTUBE</button>
     </div>
 
     <script>
-        // Ждем полной инициализации интерфейса Telegram
+        const tg = window.Telegram.WebApp;
+        
+        // Ждем загрузки страницы
         window.addEventListener('load', () => {
-            if (window.Telegram && window.Telegram.WebApp) {
-                window.Telegram.WebApp.ready();
-                window.Telegram.WebApp.expand();
+            if (tg) {
+                tg.ready();
+                tg.expand();
             }
             
-            // Считываем параметры названия от бота
+            // Считываем переданное от бота название
             const params = new URLSearchParams(window.location.search);
             const title = params.get("title");
             
             if (title) {
-                const decodedTitle = decodeURIComponent(title);
-                document.getElementById("searchInput").value = decodedTitle;
-                updateLink(decodedTitle);
+                // Вставляем красивый декодированный текст в поле ввода
+                document.getElementById("searchInput").value = decodeURIComponent(title);
+                // ИСПРАВЛЕНО: Автоматический поиск полностью убран. 
+                // Пользователь сам увидит название в инпуте и кликнет по кнопке.
             }
         });
 
-        // Слушаем изменения в инпуте, если пользователь захочет изменить название руками
-        document.getElementById("searchInput").addEventListener("input", (e) => {
-            updateLink(e.target.value);
-        });
-
-        // Функция динамического обновления ссылки на кнопке
-        function updateLink(query) {
-            if (!query) return;
-            const encoded = encodeURIComponent(query);
-            const btn = document.getElementById("rutubeBtn");
-            btn.href = `https://rutube.ru{encoded}`;
-        }
-
-        function search(event) {
+        // Функция срабатывает СТРОГО по ручному клику пользователя по кнопке
+        function startSearch() {
             const query = document.getElementById("searchInput").value;
-            if (!query) {
-                event.preventDefault();
-                return;
-            }
-
-            // Безопасный вызов перехода Mini App в Telegram
-            if (window.Telegram && window.Telegram.WebApp && window.Telegram.WebApp.openLink) {
-                event.preventDefault(); // Отменяем обычный переход браузера
-                const encoded = encodeURIComponent(query);
-                window.Telegram.WebApp.openLink(`https://rutube.ru{encoded}`);
+            if (!query) return;
+            
+            const encoded = encodeURIComponent(query);
+            const rutubeUrl = `https://rutube.ru{encoded}`;
+            
+            // ИСПРАВЛЕНО: Так как клик совершен вручную, Telegram 100% разрешит и обработает этот метод
+            if (tg && tg.openLink) {
+                tg.openLink(rutubeUrl);
+                
+                // Делаем микрозадержку перед закрытием, чтобы ссылка успела инициализироваться
+                setTimeout(() => {
+                    tg.close();
+                }, 100);
+            } else {
+                // Фаллбэк для обычных браузеров
+                window.open(rutubeUrl, '_blank');
             }
         }
     </script>
