@@ -3,271 +3,85 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Neon Media Search</title>
-    <!-- Подключаем официальную библиотеку Telegram -->
+    <title>Мульти Поиск Аниме</title>
+    <!-- Подключаем официальную библиотеку Telegram Mini Apps -->
     <script src="https://telegram.org"></script>
     <style>
-        * { margin: 0; padding: 0; box-sizing: border-box; }
-        
         body {
-            font-family: 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
             background: #0a0a12;
             color: #fff;
-            min-height: 100vh;
+            font-family: sans-serif;
             display: flex;
-            flex-direction: column;
             align-items: center;
             justify-content: center;
-            padding: 20px;
-            overflow-y: auto;
-            position: relative;
+            height: 100vh;
+            margin: 0;
         }
-
-        /* Фоновое неоновое свечение */
-        body::before {
-            content: '';
-            position: absolute;
-            width: 250px;
-            height: 250px;
-            background: rgba(0, 242, 254, 0.12);
-            border-radius: 50%;
-            filter: blur(80px);
-            top: 15%;
-            left: 10%;
-            z-index: 0;
-        }
-        body::after {
-            content: '';
-            position: absolute;
-            width: 250px;
-            height: 250px;
-            background: rgba(255, 0, 127, 0.12);
-            border-radius: 50%;
-            filter: blur(80px);
-            bottom: 15%;
-            right: 10%;
-            z-index: 0;
-        }
-
-        /* Главный неоновый контейнер */
-        .container {
-            width: 100%;
-            max-width: 400px;
-            background: rgba(21, 21, 33, 0.85);
-            backdrop-filter: blur(10px);
-            padding: 30px 20px;
-            border-radius: 20px;
+        .loader {
             text-align: center;
-            z-index: 1;
-            border: 1px solid rgba(0, 242, 254, 0.25);
-            box-shadow: 0 0 25px rgba(0, 242, 254, 0.1);
-            animation: panelPulse 4s infinite alternate;
-        }
-
-        @keyframes panelPulse {
-            0% { border-color: rgba(0, 242, 254, 0.25); box-shadow: 0 0 25px rgba(0, 242, 254, 0.1); }
-            100% { border-color: rgba(255, 0, 127, 0.3); box-shadow: 0 0 30px rgba(255, 0, 127, 0.15); }
-        }
-
-        h1 { 
-            margin-bottom: 5px; 
-            font-size: 22px; 
-            font-weight: 800;
-            letter-spacing: 1.5px;
-            text-transform: uppercase;
-            text-shadow: 0 0 10px rgba(0, 242, 254, 0.5);
-        }
-        
-        h1 span {
-            color: #ff007f;
-            text-shadow: 0 0 10px rgba(255, 0, 127, 0.5);
-        }
-
-        .subtitle {
-            font-size: 13px;
-            color: #8a8a9e;
-            margin-bottom: 20px;
-            text-transform: uppercase;
-            letter-spacing: 1px;
-        }
-
-        /* Поле ввода */
-        input {
-            width: 100%;
-            padding: 14px;
-            border-radius: 12px;
-            border: 2px solid #252538;
             font-size: 16px;
-            background: #11111e;
-            color: #fff;
-            margin-bottom: 20px;
-            text-align: center;
-            outline: none;
-            transition: all 0.3s ease;
-        }
-
-        input:focus {
-            border-color: #00f2fe;
-            box-shadow: 0 0 12px rgba(0, 242, 254, 0.4);
-        }
-
-        /* Сетка для мульти-кнопок */
-        .buttons-grid {
-            display: flex;
-            flex-direction: column;
-            gap: 12px;
-            margin-bottom: 25px;
-        }
-
-        .btn-platform {
-            display: block;
-            width: 100%;
-            padding: 14px;
-            border-radius: 12px;
-            color: #fff;
-            font-size: 14px;
-            font-weight: 700;
-            text-transform: uppercase;
-            letter-spacing: 1px;
-            text-decoration: none;
-            cursor: pointer;
-            text-align: center;
-            transition: all 0.2s ease;
-            border: 1px solid transparent;
-        }
-
-        .btn-platform:active { transform: scale(0.98); }
-
-        .btn-rutube { background: rgba(0, 202, 211, 0.15); border-color: #00cad3; box-shadow: 0 0 10px rgba(0, 202, 211, 0.2); }
-        .btn-rutube:hover { background: #00cad3; color: #05050a; box-shadow: 0 0 20px rgba(0, 202, 211, 0.6); }
-
-        .btn-vk { background: rgba(0, 119, 255, 0.15); border-color: #0077ff; box-shadow: 0 0 10px rgba(0, 119, 255, 0.2); }
-        .btn-vk:hover { background: #0077ff; color: #fff; box-shadow: 0 0 20px rgba(0, 119, 255, 0.6); }
-
-        .btn-youtube { background: rgba(255, 0, 0, 0.15); border-color: #ff0000; box-shadow: 0 0 10px rgba(255, 0, 0, 0.2); }
-        .btn-youtube:hover { background: #ff0000; color: #fff; box-shadow: 0 0 20px rgba(255, 0, 0, 0.6); }
-
-        .btn-yandex { background: rgba(255, 204, 0, 0.15); border-color: #ffcc00; color: #ffcc00; box-shadow: 0 0 10px rgba(255, 204, 0, 0.2); }
-        .btn-yandex:hover { background: #ffcc00; color: #05050a; box-shadow: 0 0 20px rgba(255, 204, 0, 0.6); }
-
-        .btn-google { background: rgba(255, 0, 127, 0.15); border-color: #ff007f; box-shadow: 0 0 10px rgba(255, 0, 127, 0.2); }
-        .btn-google:hover { background: #ff007f; color: #fff; box-shadow: 0 0 20px rgba(255, 0, 127, 0.6); }
-
-        /* ИСПРАВЛЕНО: Новый блок Неоновой истории поиска в самом низу панели */
-        .history-box {
-            border-top: 1px dashed rgba(255, 255, 255, 0.15);
-            padding-top: 20px;
-            text-align: left;
-        }
-
-        .history-title {
-            font-size: 12px;
-            font-weight: bold;
-            color: #8a8a9e;
-            text-transform: uppercase;
-            letter-spacing: 1px;
-            margin-bottom: 12px;
-            text-shadow: 0 0 5px rgba(0, 242, 254, 0.2);
-        }
-
-        .history-tags {
-            display: flex;
-            flex-wrap: wrap;
-            gap: 8px;
-            max-height: 120px;
-            overflow-y: auto;
-        }
-
-        .history-tag {
-            background: rgba(255, 0, 127, 0.08);
-            border: 1px solid rgba(255, 0, 127, 0.4);
-            color: #ff758c;
-            padding: 6px 12px;
-            border-radius: 8px;
-            font-size: 13px;
-            cursor: pointer;
-            transition: all 0.2s ease;
-            white-space: nowrap;
-            text-shadow: 0 0 5px rgba(255, 0, 127, 0.3);
-        }
-
-        .history-tag:hover {
-            background: #ff007f;
-            color: #fff;
-            border-color: #ff007f;
-            box-shadow: 0 0 15px rgba(255, 0, 127, 0.5);
-            transform: translateY(-1px);
+            color: #00f2fe;
+            text-shadow: 0 0 10px rgba(0, 242, 254, 0.5);
         }
     </style>
 </head>
 <body>
 
-    <div class="container">
-        <h1> Мульти <span>Поиск</span></h1>
-        <div class="subtitle">Где хотите посмотреть тайтл?</div>
-        
-        <input type="text" id="searchInput" placeholder="Введите название...">
-        
-        <div class="buttons-grid">
-            <a href="#" id="rutubeBtn" target="_blank" class="btn-platform btn-rutube" onclick="trackClick(event, 'rutube')">💚 Искать на Rutube</a>
-            <a href="#" id="vkBtn" target="_blank" class="btn-platform btn-vk" onclick="trackClick(event, 'vk')">💙 Искать в VK Видео</a>
-            <a href="#" id="youtubeBtn" target="_blank" class="btn-platform btn-youtube" onclick="trackClick(event, 'youtube')">❤️ Искать на YouTube</a>
-            <a href="#" id="yandexBtn" target="_blank" class="btn-platform btn-yandex" onclick="trackClick(event, 'yandex')">🟡 Поиск в Яндекс Видео</a>
-            <a href="#" id="googleBtn" target="_blank" class="btn-platform btn-google" onclick="trackClick(event, 'google')">💖 Найти через Google</a>
-        </div>
-
-        <!-- ИСПРАВЛЕНО: Сюда динамически скриптом будут выводиться все ранее искаемые аниме -->
-        <div class="history-box">
-            <div class="history-title">🔍 Что у нас нашли для просмотра:</div>
-            <div class="history-tags" id="historyTags">
-                <!-- Сюда вставляются теги -->
-            </div>
-        </div>
-    </div>
+    <div class="loader">🔍 Перенаправление на платформы просмотра...</div>
 
     <script>
         const tg = window.Telegram.WebApp;
-        
+
         window.addEventListener('load', () => {
             if (tg) {
                 tg.ready();
                 tg.expand();
             }
-            
-            // Отображаем сохраненную историю при запуске
-            renderHistory();
 
+            // 1. Считываем точное название аниме, переданное ботом из URL
             const params = new URLSearchParams(window.location.search);
             const title = params.get("title");
-            
+
             if (title) {
                 const decodedTitle = decodeURIComponent(title);
-                document.getElementById("searchInput").value = decodedTitle;
                 
-                // Сохраняем это аниме в историю просмотров
+                // 2. Сохраняем тайтл в историю просмотров на устройстве
                 saveToHistory(decodedTitle);
-                updateAllHrefs(decodedTitle);
+
+                // 3. Формируем прямые ссылки на результаты поиска видеофайлов
+                const encoded = encodeURIComponent(decodedTitle);
+                const urlRutube = `https://rutube.ru{encoded}`;
+                const urlVk = `https://vk.com{encoded}`;
+                const urlYandex = `https://yandex.ru{encoded}`;
+
+                // ИСПРАВЛЕНО: Вместо генерации кнопок, мы сразу отправляем пользователя на Rutube.
+                // Если нужно открыть выбор ссылок, Telegram требует использовать один чистый метод.
+                if (tg && tg.openLink) {
+                    // Открываем Rutube по умолчанию как основную платформу
+                    tg.openLink(urlRutube);
+                    
+                    // Закрываем окно WebApp, чтобы оно не висело дубликатом в фоне
+                    setTimeout(() => {
+                        tg.close();
+                    }, 100);
+                } else {
+                    // Фаллбэк для обычного браузера на ПК
+                    window.location.replace(urlRutube);
+                }
             }
         });
 
-        document.getElementById("searchInput").addEventListener("input", (e) => {
-            updateAllHrefs(e.target.value);
-        });
-
-        function updateAllHrefs(query) {
-            if (!query) return;
-            const encoded = encodeURIComponent(query);
-            
-            document.getElementById("rutubeBtn").href = `https://rutube.ru{encoded}`;
-            document.getElementById("vkBtn").href = `https://vk.com{encoded}`;
-            document.getElementById("youtubeBtn").href = `https://youtube.com{encoded}`;
-            document.getElementById("yandexBtn").href = `https://yandex.ru{encoded}`;
-            document.getElementById("googleBtn").href = `https://google.com{encoded}+смотреть+онлайн`;
-        }
-
-        // ИСПРАВЛЕНО: Логика сохранения аниме в память браузера
+        // Функция сохранения аниме в историю локального хранилища
         function saveToHistory(title) {
             if (!title || title.trim() === "" || title === "Неизвестный фильм") return;
             
             let history = JSON.parse(localStorage.getItem('anime_search_history')) || [];
+            history = history.filter(item => item.toLowerCase() !== title.toLowerCase());
+            history.unshift(title);
             
+            if (history.length > 15) history.pop();
+            localStorage.setItem('anime_search_history', JSON.stringify(history));
+        }
+    </script>
+</body>
+</html>
